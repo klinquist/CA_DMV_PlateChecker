@@ -40,31 +40,35 @@ print "Checking plates..."
 
 for plate in sys.argv:
 	if (plate.find (".py")) == -1:
-		if (len(plate)) > 7:
-			print plate + " is longer than the maximum 7 characters";
+
+		plate = plate.upper()
+		if (plate.find ("0")) <> -1:
+			print plate + " not checked. California does not allow zeros in personalized plates."
 		else:
-			plate = plate.upper()
-			platearray = list(plate)
-			platearray = platearray + ["*"] * (7 - len(platearray))    # All plate queries must be 7 characters padded by asterisks.
-			r = br.open('https://www.dmv.ca.gov/wasapp/ipp2/processPers.do')
-			for form in br.forms():
-			    if form.attrs['id'] == 'PersonalizeFormBean':
-			        br.form = form
-			        break
-			br.form.set_all_readonly(False)
-			br.find_control(name="plateChar0").value = [platearray[0]]
-			br.find_control(name="plateChar1").value = [platearray[1]]
-			br.find_control(name="plateChar2").value = [platearray[2]]
-			br.find_control(name="plateChar3").value = [platearray[3]]
-			br.find_control(name="plateChar4").value = [platearray[4]]
-			br.find_control(name="plateChar5").value = [platearray[5]]
-			br.find_control(name="plateChar6").value = [platearray[6]]
-			br.submit()
-			dmvres = br.response().read()
-			if dmvres.find("Sorry, the plate you have requested is not available") == -1:
-			    print plate + " is available!"
+			if (len(plate)) > 7:
+				print plate + " is longer than the maximum 7 characters";
 			else:
-			    print plate + " is NOT available"
+				platearray = list(plate)
+				platearray = platearray + ["*"] * (7 - len(platearray))    # All plate queries must be 7 characters padded by asterisks.
+				r = br.open('https://www.dmv.ca.gov/wasapp/ipp2/processPers.do')
+				for form in br.forms():
+				    if form.attrs['id'] == 'PersonalizeFormBean':
+				        br.form = form
+				        break
+				br.form.set_all_readonly(False)
+				br.find_control(name="plateChar0").value = [platearray[0]]
+				br.find_control(name="plateChar1").value = [platearray[1]]
+				br.find_control(name="plateChar2").value = [platearray[2]]
+				br.find_control(name="plateChar3").value = [platearray[3]]
+				br.find_control(name="plateChar4").value = [platearray[4]]
+				br.find_control(name="plateChar5").value = [platearray[5]]
+				br.find_control(name="plateChar6").value = [platearray[6]]
+				br.submit()
+				dmvres = br.response().read()
+				if dmvres.find("Sorry, the plate you have requested is not available") == -1:
+				    print plate + " is available!"
+				else:
+				    print plate + " is NOT available"
 
 
 
